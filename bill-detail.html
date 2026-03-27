@@ -62,6 +62,7 @@
       margin: 18px auto 36px;
       display: grid;
       gap: 18px;
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
     }
     .hero, .card, .state-banner {
       border: 1px solid var(--line);
@@ -355,6 +356,7 @@
     .summary-card--pending .summary-card__value { color: #c24141; }
     .table-scroll {
       overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
       border-radius: var(--radius-lg);
       border: 1px solid var(--line);
       background: rgba(255, 255, 255, 0.86);
@@ -363,6 +365,7 @@
       width: 100%;
       min-width: 980px;
       border-collapse: collapse;
+      table-layout: fixed;
     }
     .table th, .table td {
       padding: 14px 16px;
@@ -422,6 +425,10 @@
     @media (max-width: 1040px) {
       .hero-grid, .filters-top, .summary-grid { grid-template-columns: 1fr; }
     }
+    @media (max-width: 900px) {
+      .action-row { width: 100%; }
+      .action-row .button { flex: 1 1 0; min-width: 120px; }
+    }
     @media (max-width: 720px) {
       .page {
         width: min(100% - 16px, 100%);
@@ -430,9 +437,73 @@
       }
       .hero, .card { padding: 18px; border-radius: 22px; }
       .hero h1 { font-size: 28px; }
+      .hero-side { gap: 10px; }
+      .hero-stat { padding: 12px 14px; }
+      .hero-stat-value { font-size: 22px; }
       .card-head { flex-direction: column; }
       .action-row { justify-content: flex-start; }
-      .table { min-width: 860px; }
+      .button { min-height: 40px; width: 100%; }
+      .filters-top { grid-template-columns: 1fr; }
+      .table-scroll { overflow-x: visible; }
+      .table {
+        min-width: 0;
+        border-collapse: separate;
+        border-spacing: 0;
+      }
+      .table thead {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+      }
+      .table tbody tr {
+        display: block;
+        padding: 10px 12px;
+        margin-bottom: 10px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-lg);
+        background: linear-gradient(180deg, #fff 0%, #f8fbff 100%);
+      }
+      .table tbody tr + tr { margin-top: 10px; }
+      .table tbody td {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 8px 0;
+        border: 0;
+        border-bottom: 1px dashed var(--line);
+        text-align: left;
+      }
+      .table tbody td:last-child { border-bottom: 0; }
+      .table tbody td::before {
+        content: attr(data-label);
+        flex: 0 0 48%;
+        color: var(--muted);
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        font-weight: 700;
+        line-height: 1.4;
+        white-space: normal;
+      }
+      .table td.is-right, .table th.is-right { text-align: left; }
+      .table .table-cell-main,
+      .table td > .table-cell-main,
+      .table td > .table-cell-sub {
+        width: 100%;
+      }
+      .table .table-cell-main { width: 100%; font-size: 14px; }
+      .table .table-cell-sub { margin-top: 4px; }
+      .table .table-metric {
+        text-align: right;
+        margin-left: auto;
+        min-width: 52%;
+      }
+      .table th,
+      .table td { font-size: 14px; }
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
@@ -621,7 +692,7 @@
   <script>
     (() => {
       // 账单详情接口地址固定在页面内，链接中不再携带 api 参数。
-      const DEFAULT_API_URL = "https://loctg.6slotgame.com/api/accounting/bill-detail/query";
+      const DEFAULT_API_URL = "https://d3tiw25ybyotx0.cloudfront.net/api/accounting/bill-detail/query";
       const TZ_OFFSET_MS = 8 * 60 * 60 * 1000;
       const MAX_RANGE_MS = 30 * 24 * 60 * 60 * 1000;
 
@@ -773,6 +844,9 @@
 
       function appendCell(row, text, options) {
         const td = document.createElement("td");
+        if (options && options.label) {
+          td.setAttribute("data-label", options.label);
+        }
         if (options && options.align) {
           td.classList.add("is-" + options.align);
         }
@@ -865,12 +939,13 @@
         rows.forEach((rowData) => {
           const row = document.createElement("tr");
           appendCell(row, formatValue(rowData.operator_name, String(rowData.operator_id || "-")), {
+            label: "操作员",
             main: true,
             sub: rowData.operator_id ? "ID " + rowData.operator_id : "",
           });
-          appendCell(row, formatValue(rowData.total_incoming, "0"), { align: "right", metric: true });
-          appendCell(row, formatValue(rowData.total_payout, "0"), { align: "right", metric: true });
-          appendCell(row, formatValue(rowData.remaining, "0"), { align: "right", metric: true });
+          appendCell(row, formatValue(rowData.total_incoming, "0"), { align: "right", metric: true, label: "总入款" });
+          appendCell(row, formatValue(rowData.total_payout, "0"), { align: "right", metric: true, label: "总下发" });
+          appendCell(row, formatValue(rowData.remaining, "0"), { align: "right", metric: true, label: "结余" });
           els.operatorSummaryBody.appendChild(row);
         });
       }
@@ -883,13 +958,13 @@
         tbody.innerHTML = "";
         rows.forEach((item) => {
           const row = document.createElement("tr");
-          appendCell(row, formatValue(item.time, "-"), { metric: true });
-          appendCell(row, formatValue(item.amount, "0"), { align: "right", metric: true });
-          appendCell(row, formatValue(item.exchange_rate, "-"), { align: "right", metric: true });
-          appendCell(row, formatValue(item.fee_rate, "-"), { align: "right", metric: true });
-          appendCell(row, formatValue(item.usdt_amount, "0"), { align: "right", metric: true });
-          appendCell(row, formatValue(item.operator_name, "-"), { main: true });
-          appendCell(row, formatValue(item.note, "—"), {});
+          appendCell(row, formatValue(item.time, "-"), { metric: true, label: "时间" });
+          appendCell(row, formatValue(item.amount, "0"), { align: "right", metric: true, label: "金额(CNY)" });
+          appendCell(row, formatValue(item.exchange_rate, "-"), { align: "right", metric: true, label: "汇率" });
+          appendCell(row, formatValue(item.fee_rate, "-"), { align: "right", metric: true, label: "费率" });
+          appendCell(row, formatValue(item.usdt_amount, "0"), { align: "right", metric: true, label: "USDT数量" });
+          appendCell(row, formatValue(item.operator_name, "-"), { main: true, label: "操作人" });
+          appendCell(row, formatValue(item.note, "—"), { label: "备注" });
           tbody.appendChild(row);
         });
       }
