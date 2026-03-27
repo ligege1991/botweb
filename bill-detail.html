@@ -592,7 +592,6 @@
               <th>时间</th>
               <th class="is-right">金额</th>
               <th class="is-right">汇率</th>
-              <th class="is-right">费率</th>
               <th class="is-right">USDT数量</th>
               <th>操作人</th>
               <th>备注</th>
@@ -879,6 +878,24 @@
         });
       }
 
+      function renderPayoutEntries(rows, tbody, emptyText) {
+        if (!Array.isArray(rows) || rows.length === 0) {
+          clearTableBody(tbody, emptyText);
+          return;
+        }
+        tbody.innerHTML = "";
+        rows.forEach((item) => {
+          const row = document.createElement("tr");
+          appendCell(row, formatValue(item.time, "-"), { metric: true, label: "时间" });
+          appendCell(row, formatValue(item.amount, "0"), { align: "right", metric: true, label: "金额(CNY)" });
+          appendCell(row, formatValue(item.exchange_rate, "-"), { align: "right", metric: true, label: "汇率" });
+          appendCell(row, formatValue(item.usdt_amount, "0"), { align: "right", metric: true, label: "USDT数量" });
+          appendCell(row, formatValue(item.operator_name, "-"), { main: true, label: "操作人" });
+          appendCell(row, formatValue(item.note, "—"), { label: "备注" });
+          tbody.appendChild(row);
+        });
+      }
+
       function updateScope(response) {
         const scope = response && response.scope ? response.scope : {};
         const range = response && response.range ? response.range : {};
@@ -1038,7 +1055,7 @@
           renderSummary(data.summary || {});
           renderOperatorSummaries(data.operator_summaries || []);
           renderEntries(data.credit_entries || [], els.creditEntriesBody, "该时间范围暂无入款明细。");
-          renderEntries(data.payout_entries || [], els.payoutEntriesBody, "该时间范围暂无下发明细。");
+          renderPayoutEntries(data.payout_entries || [], els.payoutEntriesBody, "该时间范围暂无下发明细。");
 
           const noDetails =
             (!data.operator_summaries || data.operator_summaries.length === 0) &&
