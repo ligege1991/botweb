@@ -435,15 +435,62 @@
         margin: 8px auto 20px;
         gap: 12px;
       }
-      .hero, .card { padding: 18px; border-radius: 22px; }
-      .hero h1 { font-size: 28px; }
-      .hero-side { gap: 10px; }
-      .hero-stat { padding: 12px 14px; }
-      .hero-stat-value { font-size: 22px; }
-      .card-head { flex-direction: column; }
-      .action-row { justify-content: flex-start; }
-      .button { min-height: 40px; width: 100%; }
-      .filters-top { grid-template-columns: 1fr; }
+      .hero, .card { padding: 12px; border-radius: 16px; }
+      .hero { padding-bottom: 10px; }
+      .hero-grid { gap: 10px; }
+      .hero-copy { gap: 8px; }
+      .eyebrow { display: none; }
+      .hero-subtitle {
+        margin: 0;
+        font-size: 11px;
+        line-height: 1.45;
+      }
+      .hero h1 { font-size: 24px; }
+      .meta-row { gap: 6px; }
+      .pill {
+        min-height: 26px;
+        padding: 0 10px;
+        font-size: 11px;
+      }
+      .hero-side { gap: 8px; padding: 10px; }
+      .hero-side-title { display: none; }
+      .hero-stat { padding: 10px 12px; }
+      .hero-stat-value { font-size: 20px; }
+      .hero-stat-label { font-size: 10px; }
+      .card-head {
+        flex-direction: column;
+        margin-bottom: 8px;
+      }
+      .card-title { margin: 0; font-size: 15px; line-height: 1.35; }
+      .card-subtitle { display: none; }
+      .action-row {
+        justify-content: flex-start;
+        gap: 8px;
+      }
+      .button { min-height: 36px; width: 100%; }
+      .action-row .button { flex: 1 1 0; width: auto; }
+      .filters-top { grid-template-columns: 1fr; gap: 8px; }
+      .field { gap: 4px; }
+      .field label { font-size: 11px; }
+      .field input { min-height: 40px; padding: 0 10px; }
+      .quick-row { gap: 6px; }
+      .quick-row .button { min-height: 32px; padding: 0 10px; }
+      .hint { display: none; }
+      .summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+      .summary-card {
+        min-height: 0;
+        padding: 10px 12px;
+      }
+      .summary-card__label {
+        gap: 6px;
+        font-size: 11px;
+      }
+      .summary-card__value {
+        font-size: 22px;
+      }
       .table-scroll { overflow-x: visible; }
       .table {
         min-width: 0;
@@ -460,19 +507,19 @@
       }
       .table tbody tr {
         display: block;
-        padding: 10px 12px;
-        margin-bottom: 10px;
+        padding: 8px 10px;
+        margin-bottom: 6px;
         border: 1px solid var(--line);
         border-radius: var(--radius-lg);
         background: linear-gradient(180deg, #fff 0%, #f8fbff 100%);
       }
-      .table tbody tr + tr { margin-top: 10px; }
+      .table tbody tr + tr { margin-top: 6px; }
       .table tbody td {
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
         gap: 10px;
-        padding: 8px 0;
+        padding: 6px 0;
         border: 0;
         border-bottom: 1px dashed var(--line);
         text-align: left;
@@ -480,9 +527,9 @@
       .table tbody td:last-child { border-bottom: 0; }
       .table tbody td::before {
         content: attr(data-label);
-        flex: 0 0 48%;
+        flex: 0 0 44%;
         color: var(--muted);
-        font-size: 11px;
+        font-size: 10px;
         text-transform: uppercase;
         letter-spacing: 0.06em;
         font-weight: 700;
@@ -495,15 +542,17 @@
       .table td > .table-cell-sub {
         width: 100%;
       }
-      .table .table-cell-main { width: 100%; font-size: 14px; }
-      .table .table-cell-sub { margin-top: 4px; }
+      .table .table-cell-main { width: 100%; font-size: 13px; }
+      .table .table-cell-sub { margin-top: 3px; font-size: 11px; }
       .table .table-metric {
         text-align: right;
         margin-left: auto;
         min-width: 52%;
       }
       .table th,
-      .table td { font-size: 14px; }
+      .table td { font-size: 13px; }
+      .footer-note { font-size: 11px; }
+      .mini-link { font-size: 11px; }
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
@@ -521,7 +570,7 @@
         <div class="hero-copy">
           <p class="eyebrow">Accounting / Bill Detail</p>
           <h1 id="page-title">账单详情</h1>
-          <p class="hero-subtitle" id="hero-subtitle">读取签名链接中的 `data` 参数，按 UTC+8 语义筛选账单明细、操作员汇总和下发记录。</p>
+        <p class="hero-subtitle" id="hero-subtitle">按 UTC+8 解析签名参数与时间范围。</p>
           <div class="meta-row" id="scope-pills">
             <span class="pill pill--accent" id="scope-label">等待加载...</span>
             <span class="pill" id="scope-bot">Bot -</span>
@@ -555,7 +604,6 @@
       <div class="card-head">
         <div>
           <h2 class="card-title" id="filters-title">筛选条件</h2>
-          <p class="card-subtitle">时间输入严格按东八区解释，不受浏览器本地时区影响。</p>
         </div>
         <div class="action-row">
           <button class="button button-ghost" type="button" id="refresh-button">重新查询</button>
@@ -589,7 +637,6 @@
       <div class="card-head">
         <div>
           <h2 class="card-title" id="summary-title">总览</h2>
-          <p class="card-subtitle">总入款、应下发、已下发和待下发一次展示，方便快速判断窗口状态。</p>
         </div>
       </div>
       <div class="summary-grid" id="summary-grid">
@@ -616,7 +663,6 @@
       <div class="card-head">
         <div>
           <h2 class="card-title" id="operator-title">操作员汇总</h2>
-          <p class="card-subtitle">群级账单会列出所有相关操作员，操作员级账单只显示当前范围对应的一条记录。</p>
         </div>
       </div>
       <div class="table-scroll">
@@ -638,7 +684,6 @@
       <div class="card-head">
         <div>
           <h2 class="card-title" id="credit-title">入账明细</h2>
-          <p class="card-subtitle">展示当前范围内的入账与普通减账；普通减账会按负数显示，便于和下发区分。</p>
         </div>
       </div>
       <div class="table-scroll">
@@ -663,7 +708,6 @@
       <div class="card-head">
         <div>
           <h2 class="card-title" id="payout-title">下发明细</h2>
-          <p class="card-subtitle">列出当前时间范围内的已下发记录，字段与入款表保持一致，便于对照。</p>
         </div>
       </div>
       <div class="table-scroll">
