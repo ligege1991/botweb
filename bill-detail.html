@@ -64,7 +64,7 @@
       gap: 18px;
       padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
     }
-    .hero, .card, .state-banner {
+    .hero, .card {
       border: 1px solid var(--line);
       border-radius: var(--radius-xl);
       background: var(--paper);
@@ -110,9 +110,16 @@
     .hero-subtitle {
       margin: 0;
       color: var(--muted);
-      font-size: 15px;
+      font-size: 13px;
       line-height: 1.7;
       max-width: 52rem;
+    }
+    .hero-state-line {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+      font-weight: 700;
     }
     .meta-row {
       display: flex;
@@ -137,45 +144,6 @@
       background: var(--accent-soft);
       border-color: rgba(33, 88, 255, 0.14);
       color: var(--accent);
-    }
-    .hero-side {
-      display: grid;
-      gap: 12px;
-      align-content: start;
-      padding: 18px;
-      border: 1px solid var(--line);
-      border-radius: calc(var(--radius-xl) - 4px);
-      background: rgba(255, 255, 255, 0.72);
-    }
-    .hero-side-title {
-      margin: 0;
-      font-size: 14px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      font-weight: 700;
-    }
-    .hero-stat {
-      display: grid;
-      gap: 6px;
-      padding: 14px 16px;
-      border-radius: var(--radius-md);
-      background: linear-gradient(180deg, #fff 0%, #f8fbff 100%);
-      border: 1px solid var(--line);
-    }
-    .hero-stat-label {
-      color: var(--muted);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      font-weight: 700;
-    }
-    .hero-stat-value {
-      font-size: 18px;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      line-height: 1.2;
-      word-break: break-word;
     }
     .card { padding: 22px; }
     .card-head {
@@ -263,56 +231,6 @@
       color: var(--muted);
       font-size: 13px;
       line-height: 1.55;
-    }
-    .state-banner {
-      display: none;
-      padding: 14px 16px;
-      gap: 10px;
-      align-items: flex-start;
-    }
-    .state-banner.is-visible { display: flex; }
-    .state-banner__icon {
-      flex: 0 0 auto;
-      width: 28px;
-      height: 28px;
-      border-radius: 999px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-    }
-    .state-banner__content { min-width: 0; display: grid; gap: 2px; }
-    .state-banner__title { margin: 0; font-size: 15px; font-weight: 800; }
-    .state-banner__desc {
-      margin: 0;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.55;
-      word-break: break-word;
-    }
-    .state-banner--loading {
-      border-color: rgba(33, 88, 255, 0.16);
-      background: linear-gradient(180deg, rgba(33, 88, 255, 0.10) 0%, rgba(255, 255, 255, 0.94) 100%);
-    }
-    .state-banner--loading .state-banner__icon {
-      background: rgba(33, 88, 255, 0.14);
-      color: var(--accent);
-    }
-    .state-banner--error {
-      border-color: rgba(194, 65, 65, 0.18);
-      background: linear-gradient(180deg, rgba(194, 65, 65, 0.10) 0%, rgba(255, 255, 255, 0.94) 100%);
-    }
-    .state-banner--error .state-banner__icon {
-      background: rgba(194, 65, 65, 0.14);
-      color: var(--danger);
-    }
-    .state-banner--info {
-      border-color: rgba(31, 139, 85, 0.16);
-      background: linear-gradient(180deg, rgba(31, 139, 85, 0.10) 0%, rgba(255, 255, 255, 0.94) 100%);
-    }
-    .state-banner--info .state-banner__icon {
-      background: rgba(31, 139, 85, 0.14);
-      color: var(--good);
     }
     .summary-grid {
       display: grid;
@@ -452,11 +370,6 @@
         padding: 0 10px;
         font-size: 11px;
       }
-      .hero-side { gap: 8px; padding: 10px; }
-      .hero-side-title { display: none; }
-      .hero-stat { padding: 10px 12px; }
-      .hero-stat-value { font-size: 20px; }
-      .hero-stat-label { font-size: 10px; }
       .card-head {
         flex-direction: column;
         margin-bottom: 8px;
@@ -491,63 +404,43 @@
       .summary-card__value {
         font-size: 22px;
       }
-      .table-scroll { overflow-x: visible; }
+      .table-scroll { overflow-x: auto; }
       .table {
-        min-width: 0;
-        border-collapse: separate;
+        min-width: 720px;
+        border-collapse: collapse;
         border-spacing: 0;
+        table-layout: fixed;
       }
       .table thead {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        overflow: hidden;
-        clip: rect(0, 0, 0, 0);
-        white-space: nowrap;
+        position: static;
+        width: auto;
+        height: auto;
+        overflow: visible;
+        clip: auto;
+        white-space: normal;
       }
       .table tbody tr {
-        display: block;
-        padding: 8px 10px;
-        margin-bottom: 6px;
-        border: 1px solid var(--line);
-        border-radius: var(--radius-lg);
-        background: linear-gradient(180deg, #fff 0%, #f8fbff 100%);
+        display: table-row;
       }
-      .table tbody tr + tr { margin-top: 6px; }
       .table tbody td {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 10px;
-        padding: 6px 0;
-        border: 0;
+        display: table-cell;
+        padding: 6px 10px;
         border-bottom: 1px dashed var(--line);
         text-align: left;
       }
-      .table tbody td:last-child { border-bottom: 0; }
       .table tbody td::before {
-        content: attr(data-label);
-        flex: 0 0 44%;
-        color: var(--muted);
-        font-size: 10px;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        font-weight: 700;
-        line-height: 1.4;
-        white-space: normal;
+        content: none;
       }
-      .table td.is-right, .table th.is-right { text-align: left; }
       .table .table-cell-main,
       .table td > .table-cell-main,
       .table td > .table-cell-sub {
-        width: 100%;
+        width: auto;
       }
-      .table .table-cell-main { width: 100%; font-size: 13px; }
+      .table .table-cell-main { font-size: 13px; }
       .table .table-cell-sub { margin-top: 3px; font-size: 11px; }
       .table .table-metric {
         text-align: right;
-        margin-left: auto;
-        min-width: 52%;
+        min-width: 0;
       }
       .table th,
       .table td { font-size: 13px; }
@@ -570,7 +463,8 @@
         <div class="hero-copy">
           <p class="eyebrow">Accounting / Bill Detail</p>
           <h1 id="page-title">账单详情</h1>
-        <p class="hero-subtitle" id="hero-subtitle">按 UTC+8 解析签名参数与时间范围。</p>
+          <p class="hero-subtitle" id="hero-subtitle">当前查询摘要：按 UTC+8 解析签名参数与时间范围。</p>
+          <p class="hero-state-line" id="hero-state-value">查询状态：待加载</p>
           <div class="meta-row" id="scope-pills">
             <span class="pill pill--accent" id="scope-label">等待加载...</span>
             <span class="pill" id="scope-bot">Bot -</span>
@@ -578,25 +472,6 @@
             <span class="pill" id="scope-range">范围 -</span>
           </div>
         </div>
-        <aside class="hero-side" aria-label="当前查询摘要">
-          <p class="hero-side-title">Current Scope</p>
-          <div class="hero-stat">
-            <span class="hero-stat-label">查询状态</span>
-            <strong class="hero-stat-value" id="hero-state-value">待加载</strong>
-          </div>
-          <div class="hero-stat">
-            <span class="hero-stat-label">时间语义</span>
-            <strong class="hero-stat-value">UTC+8</strong>
-          </div>
-        </aside>
-      </div>
-    </section>
-
-    <section class="state-banner state-banner--loading" id="state-banner" aria-live="polite" aria-atomic="true">
-      <div class="state-banner__icon" id="state-banner-icon">…</div>
-      <div class="state-banner__content">
-        <p class="state-banner__title" id="state-banner-title">正在准备查询</p>
-        <p class="state-banner__desc" id="state-banner-desc">页面会先校验签名链接，再按当前时间范围请求账单详情。</p>
       </div>
     </section>
 
@@ -755,10 +630,6 @@
         scopeChat: document.getElementById("scope-chat"),
         scopeRange: document.getElementById("scope-range"),
         heroStateValue: document.getElementById("hero-state-value"),
-        stateBanner: document.getElementById("state-banner"),
-        stateBannerIcon: document.getElementById("state-banner-icon"),
-        stateBannerTitle: document.getElementById("state-banner-title"),
-        stateBannerDesc: document.getElementById("state-banner-desc"),
         startTime: document.getElementById("start-time"),
         endTime: document.getElementById("end-time"),
         queryButton: document.getElementById("query-button"),
@@ -921,22 +792,17 @@
 
       function setPageState(kind, title, desc) {
         state.error = kind === "error" ? desc : null;
-        els.stateBanner.className = "state-banner is-visible state-banner--" + kind;
-        els.stateBannerIcon.textContent = kind === "error" ? "!" : kind === "loading" ? "…" : "i";
-        els.stateBannerTitle.textContent = title;
-        els.stateBannerDesc.textContent = desc;
-        els.stateBanner.classList.add("is-visible");
-        els.heroStateValue.textContent = title;
+        els.heroStateValue.textContent = "查询状态：" + title;
+        if (desc && desc.startsWith("当前查询摘要")) {
+          els.heroSubtitle.textContent = desc;
+        } else if (desc) {
+          els.heroSubtitle.textContent = "当前查询摘要：" + desc;
+        }
         els.queryButton.disabled = state.loading;
         els.refreshButton.disabled = state.loading;
         els.quickButtons.forEach((button) => {
           button.disabled = state.loading;
         });
-      }
-
-      function hideStateBanner() {
-        els.stateBanner.className = "state-banner";
-        els.stateBanner.classList.remove("is-visible");
       }
 
       function resetDisplayedData(statusLabel, statusDetail, rowText) {
@@ -1168,7 +1034,6 @@
 
           state.response = data;
           state.loading = false;
-          hideStateBanner();
           updateScope(data);
           renderSummary(data.summary || {});
           renderOperatorSummaries(data.operator_summaries || []);
@@ -1185,7 +1050,6 @@
           } else {
             setPageState("info", "查询完成", "已加载最新的账单详情。");
           }
-          els.heroStateValue.textContent = "已加载";
         } catch (error) {
           setError("查询失败，请稍后重试", error && error.message ? error.message : "网络异常或接口不可用。");
         } finally {
@@ -1227,7 +1091,7 @@
           els.scopeBot.textContent = "Bot -";
           els.scopeChat.textContent = "Chat -";
           els.scopeRange.textContent = "范围 -";
-          els.heroStateValue.textContent = "不可查询";
+          setPageState("error", "不可查询", "页面初始化失败：接口地址不合法");
           els.queryButton.disabled = true;
           els.refreshButton.disabled = true;
           els.quickButtons.forEach((button) => {
@@ -1243,7 +1107,7 @@
           els.scopeBot.textContent = "Bot -";
           els.scopeChat.textContent = "Chat -";
           els.scopeRange.textContent = "范围 -";
-          els.heroStateValue.textContent = "不可查询";
+          setPageState("error", "不可查询", "页面初始化失败：缺少 data 参数");
           els.queryButton.disabled = true;
           els.refreshButton.disabled = true;
           els.quickButtons.forEach((button) => {
